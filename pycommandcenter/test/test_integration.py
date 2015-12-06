@@ -1,7 +1,9 @@
-from pycommandcenter.socketcontroller import ServerController
+from pycommandcenter.servercontroller import ServerController
+from pycommandcenter.cluster import ClusterNode
 from utils import TestClient
 import time
 import base
+import mock
 
 
 def SendCommand(command):
@@ -28,8 +30,14 @@ class Test(base.CQSTest):
         retreived_command = self.controller.cluster.get_command()
         self.assertEquals(self.command_to_send, retreived_command)
 
-    def test_handoff_command_to_node(self):
-        self.controller.cluster.add_new_node(self.node_address, self.node_port)
+    @mock.patch.object(ClusterNode, 'send_command')
+    def test_handoff_command_to_node(self, mock_send_command):
+        self.controller.cluster.add_node(self.node_address, self.node_port)
         SendCommand(self.command_to_send)
+        self.controller.cluster.execute_node()
+        mock_send_command.assert_called_with(self.command_to_send)
+        node = self.controller.cluster.get_available_node()
+        node.send_command.assert_called_with(self.command_to_send)
+        
         
         

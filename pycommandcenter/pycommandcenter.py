@@ -1,18 +1,27 @@
 import sys
-import pycommandcenter.webserver
-import threading
+import argparse
+import yaml
+from servercontroller import ServerController
+
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.parse_args()
+    parser.add_argument('filename')
+    args = parser.parse_args()
+    configuration = yaml.load(open(args.filename).read())
+    controller = ServerController()
+    for node in configuration['nodes']:
+        controller.cluster.add_node(node['address'], node['port'])
     try:
-        server = pycommandcenter.webserver.WebServer("localhost", 9999, lambda *args, **keys: pycommandcenter.webserver.TCPHandler(server.command_handler, *args, **keys))
-        threading.Thread(target=server.serve_forever).start()
+        controller.start_server()
     except KeyboardInterrupt:
-            server.socket.close()
-    
+        sys.exit(0)
+
+
 if __name__ == "__main__":
     try:
         main()
     except Exception as e:
         print "%s" % e
         sys.exit(-1)
-    

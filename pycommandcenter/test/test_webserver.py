@@ -1,4 +1,4 @@
-from pycommandcenter.socketcontroller import ServerController
+from pycommandcenter.servercontroller import ServerController
 import base
 
 
