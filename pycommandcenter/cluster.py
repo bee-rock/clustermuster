@@ -46,12 +46,10 @@ class Cluster():
         return len(self.nodes)
 
     def get_available_node(self):
-        for node in self.nodes:
-            if node.is_available():
-                return node
-
-    def get_node_by_name(self, name):
-        pass
+        if self.number_of_nodes_available() > 0:
+            for node in self.nodes:
+                if node.is_available():
+                    return node
 
     def execute_node(self):
         json_received = self.get_json()

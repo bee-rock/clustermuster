@@ -1,18 +1,9 @@
 from pycommandcenter.servercontroller import ServerController
 from pycommandcenter.cluster import ClusterNode
-from utils import TestClient
-import time
+from utils import SendCommandFromClient
 import base
 import mock
 import json
-from jsonschema.exceptions import ValidationError
-
-
-def SendCommand(command):
-    client = TestClient("localhost", 9999)
-    client.send_command(command)
-    time.sleep(1)  # Give server some time to receive it
-    client.close()
 
 
 class Test(base.CQSTest):
@@ -27,13 +18,13 @@ class Test(base.CQSTest):
 
     def test_client_sent_invalid_json(self):
         invalid_json = "bad command bro"
-        SendCommand(invalid_json)
+        SendCommandFromClient(invalid_json)
         retreived_command = self.controller.cluster.get_json()
         self.assertTrue(retreived_command is None)
 
     def test_json_fits_schema_request(self):
         valid_json = '{"name": "any", "command":"Rossum"}'
-        SendCommand(valid_json)
+        SendCommandFromClient(valid_json)
         self.assertEquals(json.loads(valid_json), self.controller.cluster.get_json())
 
     @mock.patch.object(ClusterNode, 'send_command')
@@ -41,7 +32,7 @@ class Test(base.CQSTest):
         valid_json = '{"name": "any", "command":"Rossum"}'
         parsed_json = json.loads(valid_json)
         self.controller.cluster.add_node(self.node_address, self.node_port)
-        SendCommand(valid_json)
+        SendCommandFromClient(valid_json)
         self.controller.cluster.execute_node()
         mock_send_command.assert_called_with(parsed_json['command'])
         node = self.controller.cluster.get_available_node()

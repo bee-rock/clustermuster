@@ -1,4 +1,5 @@
 import socket
+import time
 
 
 class TestClient(object):
@@ -16,3 +17,10 @@ class TestClient(object):
 
 def null_callback():
     pass
+
+
+def SendCommandFromClient(command):
+    client = TestClient("localhost", 9999)
+    client.send_command(command)
+    time.sleep(1)  # Give server some time to receive it
+    client.close()
