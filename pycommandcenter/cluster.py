@@ -1,7 +1,8 @@
 from Queue import Empty
 import subprocess
 import json
-from jsonschema import validate
+from schema import validate_json
+
 
 class ClusterNode(object):
 
@@ -30,21 +31,10 @@ class Cluster():
         self.commands = commands
         self.wait_for_commands = True
 
-    def validate_json(self, command):
-        schema = {"title": "command",
-                  "type": "object",
-                  "properties":
-                        {
-                            "name": {"type": "string"}, "command": {"type": "string"},
-                        },
-                  "required": ["name", "command"]
-                  }
-        validate(command, schema)
-
     def get_json(self):
         try:
             return self.commands.get_nowait()
-            self.validate_json(json)
+            validate_json(json)
         except Empty:
             return None
 

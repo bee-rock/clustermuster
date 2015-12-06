@@ -36,10 +36,6 @@ class Test(base.CQSTest):
         SendCommand(valid_json)
         self.assertEquals(json.loads(valid_json), self.controller.cluster.get_json())
 
-    def test_json_does_not_fit_scheme(self):
-        json_with_bad_schema = '{"first_name": "Guido", "last_name":"Rossum"}'
-        self.assertRaises(ValidationError, self.controller.cluster.validate_json, json_with_bad_schema)
-
     @mock.patch.object(ClusterNode, 'send_command')
     def test_handoff_command_to_node(self, mock_send_command):
         valid_json = '{"name": "any", "command":"Rossum"}'
