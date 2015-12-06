@@ -1,4 +1,5 @@
 import SocketServer
+import json
 
 
 class TCPHandler(SocketServer.BaseRequestHandler):
@@ -22,4 +23,7 @@ class WebServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
         self.commands = commands
 
     def command_handler(self, command):
-        self.commands.put(command)
+        try:
+            self.commands.put(json.loads(command))
+        except ValueError:
+            pass

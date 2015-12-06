@@ -3,7 +3,7 @@ import base
 
 
 class Test(base.CQSTest):
-    
+
     def test_server_startup_and_shutdown(self):
         controller = ServerController()
         controller.start_server()

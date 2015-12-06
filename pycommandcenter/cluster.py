@@ -1,6 +1,7 @@
 from Queue import Empty
 import subprocess
-
+import json
+from jsonschema import validate
 
 class ClusterNode(object):
 
@@ -8,15 +9,10 @@ class ClusterNode(object):
         self.address = address
         self.port = port
         self.available = True
+        self.name = None
 
     def is_available(self):
         return self.available
-
-    def check_return_code(self, code):
-        pass
-
-    def check_error(self, error):
-        pass
 
     def send_command(self, command):
         process = subprocess.Popen("ssh " + self.address + " " + command, shell=True,
@@ -34,9 +30,21 @@ class Cluster():
         self.commands = commands
         self.wait_for_commands = True
 
-    def get_command(self):
+    def validate_json(self, command):
+        schema = {"title": "command",
+                  "type": "object",
+                  "properties":
+                        {
+                            "name": {"type": "string"}, "command": {"type": "string"},
+                        },
+                  "required": ["name", "command"]
+                  }
+        validate(command, schema)
+
+    def get_json(self):
         try:
             return self.commands.get_nowait()
+            self.validate_json(json)
         except Empty:
             return None
 
@@ -52,7 +60,15 @@ class Cluster():
             if node.is_available():
                 return node
 
+    def get_node_by_name(self, name):
+        pass
+
     def execute_node(self):
-        command = self.get_command()
-        node = self.get_available_node()
-        node.send_command(command)
+        json_received = self.get_json()
+
+        if json_received['name'] == 'any':
+            node = self.get_available_node()
+            if node is None:
+                self.commands.put(json_received)
+                return None
+            node.send_command(json_received['command'])
