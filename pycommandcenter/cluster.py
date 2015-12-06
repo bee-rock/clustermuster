@@ -33,8 +33,9 @@ class Cluster():
 
     def get_json(self):
         try:
-            return self.commands.get_nowait()
+            json = self.commands.get_nowait()
             validate_json(json)
+            return json
         except Empty:
             return None
 
@@ -53,7 +54,6 @@ class Cluster():
 
     def execute_node(self):
         json_received = self.get_json()
-
         if json_received['name'] == 'any':
             node = self.get_available_node()
             if node is None:
