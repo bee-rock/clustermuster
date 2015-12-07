@@ -36,5 +36,4 @@ class Test(base.CQSTest):
         self.assertEquals(1, self.controller.cluster.number_of_nodes_available())
         self.controller.cluster.send_command_to_node(command_to_send)
         mock_send_command.assert_called_with(command_to_send)
-        node = self.controller.cluster.get_available_node()
-        node.send_command.assert_called_with(command_to_send)
+

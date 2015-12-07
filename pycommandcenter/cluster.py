@@ -22,8 +22,7 @@ class ClusterNode(object):
                                    stdout=PIPE, stderr=STDOUT)  # Install public key to avoid password
         _, stderr = process.communicate()
         self.check_return_code(stderr)
-        status = process.poll()
-        return status
+        self.available = True
 
 
 class Cluster():
@@ -58,6 +57,7 @@ class Cluster():
             if node is None:
                 self.commands.put(command)
                 return None
+            node.available = False
             node.send_command(command)
 
     def poll_for_commands(self, poll_time=1):
