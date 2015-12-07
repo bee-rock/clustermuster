@@ -1,5 +1,5 @@
 from Queue import Empty
-import subprocess
+from subprocess import Popen, PIPE, STDOUT
 import json
 from schema import validate_json
 import time
@@ -18,11 +18,10 @@ class ClusterNode(object):
         return self.available
 
     def send_command(self, command):
-        process = subprocess.Popen("ssh " + self.address + " " + command, shell=True,
-                                   stdout=subprocess.PIPE, stderr=subprocess.STDOUT)  # Install public key to avoid password
-        output, stderr = process.communicate()
-        self.check_return_code(output)
-        self.check_error(stderr)
+        process = Popen("ssh " + self.address + " " + command, shell=True,
+                                   stdout=PIPE, stderr=STDOUT)  # Install public key to avoid password
+        _, stderr = process.communicate()
+        self.check_return_code(stderr)
         status = process.poll()
         return status
 
