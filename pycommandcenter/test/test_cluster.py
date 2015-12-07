@@ -28,3 +28,6 @@ class Test(base.CQSTest):
         self.assertTrue(node is not None)
         self.assertEquals(node.address, self.address)
         self.assertEquals(node.port, self.port)
+
+#     def test_poll_for_commands(self):
+#         self.cluster.poll_for_commands()

@@ -2,6 +2,8 @@ from Queue import Empty
 import subprocess
 import json
 from schema import validate_json
+import time
+from jsonschema import ValidationError
 
 
 class ClusterNode(object):
@@ -10,7 +12,7 @@ class ClusterNode(object):
         self.address = address
         self.port = port
         self.available = True
-        self.name = None
+        self.name = True
 
     def is_available(self):
         return self.available
@@ -29,7 +31,7 @@ class Cluster():
     def __init__(self, commands):
         self.nodes = []
         self.commands = commands
-        self.wait_for_commands = True
+        self.polling = False
 
     def get_json(self):
         try:
@@ -52,11 +54,23 @@ class Cluster():
                 if node.is_available():
                     return node
 
-    def execute_node(self):
-        json_received = self.get_json()
-        if json_received['name'] == 'any':
+    def send_command_to_node(self, command):
             node = self.get_available_node()
             if node is None:
-                self.commands.put(json_received)
+                self.commands.put(command)
                 return None
-            node.send_command(json_received['command'])
+            node.send_command(command)
+
+    def poll_for_commands(self, poll_time=1):
+        while True and self.polling is True:
+            try:
+                json_received = self.get_json()
+            except ValidationError:
+                json_received = None
+            if json_received is not None:
+                command = json_received['command']
+                if json_received['name'] == 'any':
+                    self.send_command_to_node(command)
+        time.sleep(poll_time)
+
+  

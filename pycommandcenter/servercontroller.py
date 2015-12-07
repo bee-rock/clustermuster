@@ -15,15 +15,18 @@ class ServerController(object):
                                           lambda *args,
                                           **keys: webserver.TCPHandler(self.server.command_handler, *args, **keys))
         self.server_thread = threading.Thread(target=self.server.serve_forever)
-        self.server_running = None
+        self.cluster_thread = threading.Thread(target=self.cluster.poll_for_commands)
 
     def stop_server(self):
         self.server.server_close()
         self.server.shutdown()
-        self.server_running = False
+        self.cluster.polling = False
         if self.server_thread is not None and self.server_thread.isAlive():
             self.server_thread.join()
 
+        if self.cluster_thread is not None and self.cluster_thread.isAlive():
+            self.cluster_thread.join()
+
     def start_server(self):
-        self.server_thread = self.server_thread.start()
-        self.server_running = True
+        self.server_thread.start()
+        self.cluster_thread.start()

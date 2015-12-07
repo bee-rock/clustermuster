@@ -31,9 +31,10 @@ class Test(base.CQSTest):
     def test_handoff_command_to_node(self, mock_send_command):
         valid_json = '{"name": "any", "command":"Rossum"}'
         parsed_json = json.loads(valid_json)
+        command_to_send = parsed_json['command']
         self.controller.cluster.add_node(self.node_address, self.node_port)
-        SendCommandFromClient(valid_json)
-        self.controller.cluster.execute_node()
-        mock_send_command.assert_called_with(parsed_json['command'])
+        self.assertEquals(1, self.controller.cluster.number_of_nodes_available())
+        self.controller.cluster.send_command_to_node(command_to_send)
+        mock_send_command.assert_called_with(command_to_send)
         node = self.controller.cluster.get_available_node()
-        node.send_command.assert_called_with(parsed_json['command'])
+        node.send_command.assert_called_with(command_to_send)
