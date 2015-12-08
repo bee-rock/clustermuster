@@ -8,21 +8,26 @@ from jsonschema import ValidationError
 
 class ClusterNode(object):
 
-    def __init__(self, address, port):
+    def __init__(self, user_name, address, port):
         self.address = address
         self.port = port
         self.available = True
-        self.name = True
+        self.user_name = user_name
+        self.error_output_from_last_command = None
+        self.result_from_last_command = None
 
     def is_available(self):
         return self.available
 
     def send_command(self, command):
-        process = Popen("ssh " + self.address + " " + command, shell=True,
-                                   stdout=PIPE, stderr=STDOUT)  # Install public key to avoid password
-        _, stderr = process.communicate()
-        self.check_return_code(stderr)
+        self.available = False
+        process = Popen(self.construct_command(command), shell=True,
+                        stdout=PIPE, stderr=STDOUT)  # Install public key to avoid password
+        self.result_from_last_command, self.error_output_from_last_command = process.communicate()
         self.available = True
+
+    def construct_command(self, command):
+        return "ssh %s@%s '%s'" % (self.user_name, self.address, command)
 
 
 class Cluster():
@@ -39,8 +44,8 @@ class Cluster():
         except Empty:
             return None
 
-    def add_node(self, ip_address, port):
-        node = ClusterNode(ip_address, port)
+    def add_node(self, username, ip_address, port):
+        node = ClusterNode(username, ip_address, port)
         self.nodes.append(node)
 
     def number_of_nodes_available(self):

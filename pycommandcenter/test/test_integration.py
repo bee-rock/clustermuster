@@ -10,6 +10,7 @@ class Test(base.CQSTest):
     def setUp(self):
         self.controller = ServerController()
         self.controller.start_server()
+        self.user_name = "cooluser"
         self.node_address = "some_address"
         self.node_port = 22
 
@@ -32,7 +33,7 @@ class Test(base.CQSTest):
         valid_json = '{"name": "any", "command":"Rossum"}'
         parsed_json = json.loads(valid_json)
         command_to_send = parsed_json['command']
-        self.controller.cluster.add_node(self.node_address, self.node_port)
+        self.controller.cluster.add_node(self.user_name, self.node_address, self.node_port)
         self.assertEquals(1, self.controller.cluster.number_of_nodes_available())
         self.controller.cluster.send_command_to_node(command_to_send)
         mock_send_command.assert_called_with(command_to_send)
