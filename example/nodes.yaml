@@ -1,8 +1,10 @@
 nodes:
   node1:
+    username: osboxes
     address: 192.168.0.10
     port: 22
   node2:
+    username: osboxes
     address: 192.168.0.11
     port: 22
 

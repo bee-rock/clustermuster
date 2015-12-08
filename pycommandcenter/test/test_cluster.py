@@ -7,12 +7,12 @@ class Test(base.CQSTest):
 
     def setUp(self):
         self.cluster = Cluster(Queue())
-        self.user_name = "cooluser"
+        self.username = "cooluser"
         self.address = "some_address"
         self.port = 22
 
     def test_add_node(self):
-        self.cluster.add_node(self.user_name, self.address, self.port)
+        self.cluster.add_node(self.username, self.address, self.port)
         self.assertEquals(1, self.cluster.number_of_nodes_available())
 
     def test_number_of_nodes_available(self):
@@ -22,16 +22,16 @@ class Test(base.CQSTest):
         self.assertEquals(None, self.cluster.get_json())
 
     def test_get_node(self):
-        node = ClusterNode(self.user_name, self.address, self.port)
+        node = ClusterNode(self.username, self.address, self.port)
         self.assertTrue(node.is_available())
-        self.cluster.add_node(self.user_name, self.address, self.port)
+        self.cluster.add_node(self.username, self.address, self.port)
         node = self.cluster.get_available_node()
         self.assertTrue(node is not None)
         self.assertEquals(node.address, self.address)
-        self.assertEquals(node.user_name, self.user_name)
+        self.assertEquals(node.username, self.username)
         self.assertEquals(node.port, self.port)
 
     def test_construct_command(self):
-        node = ClusterNode(self.user_name, self.address, self.port)
+        node = ClusterNode(self.username, self.address, self.port)
         constructed_command = node.construct_command("ls -l")
         self.assertEquals("ssh cooluser@some_address 'ls -l'", constructed_command)

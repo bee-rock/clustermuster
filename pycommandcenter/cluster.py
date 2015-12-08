@@ -8,11 +8,11 @@ from jsonschema import ValidationError
 
 class ClusterNode(object):
 
-    def __init__(self, user_name, address, port):
+    def __init__(self, username, address, port):
         self.address = address
         self.port = port
         self.available = True
-        self.user_name = user_name
+        self.username = username
         self.error_output_from_last_command = None
         self.result_from_last_command = None
 
@@ -27,7 +27,7 @@ class ClusterNode(object):
         self.available = True
 
     def construct_command(self, command):
-        return "ssh %s@%s '%s'" % (self.user_name, self.address, command)
+        return "ssh %s@%s '%s'" % (self.username, self.address, command)
 
 
 class Cluster():
