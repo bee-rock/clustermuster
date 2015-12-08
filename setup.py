@@ -12,4 +12,4 @@ setup(name='pycommandcenter',
       test_suite='nose.collector',
       tests_require=['nose>=1.3.7', 'mock>=1.3.0'],
       packages=['pycommandcenter'],
-      entry_points={'console_scripts': ['pycommandserver=sample:main', ], }, )
+      entry_points={'console_scripts': ['pycommandcenter=pycommandcenter.pycommandcenter:main', ], }, )
