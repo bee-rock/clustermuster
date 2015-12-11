@@ -11,4 +11,4 @@ ch.setFormatter(formatter)
 # add ch to logger
 logger.addHandler(ch)
 
-logging.getLogger("pycommandcenter").setLevel(logging.WARNING)
+logging.getLogger("clustermuster").setLevel(logging.WARNING)

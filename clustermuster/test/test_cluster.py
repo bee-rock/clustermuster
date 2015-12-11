@@ -1,4 +1,4 @@
-from pycommandcenter.cluster import Cluster, ClusterNode
+from clustermuster.cluster import Cluster, ClusterNode
 import base
 from Queue import Queue
 

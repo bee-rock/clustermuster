@@ -1,13 +1,16 @@
-from pycommandcenter.servercontroller import ServerController
+from clustermuster.servercontroller import ServerController
 import base
+import time
 
 
 class Test(base.CQSTest):
 
     def setUp(self):
-        self.controller = ServerController()
+        server_port = 9999
+        self.controller = ServerController(server_port)
 
     def assert_thread(self, thread):
+        time.sleep(0.1)
         self.assertTrue(thread is not None)
         self.assertTrue(thread.isAlive())
 

@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 class ServerController(object):
 
-    def __init__(self, port=9999):
+    def __init__(self, port):
         self.commands = Queue()
         self.cluster = Cluster(self.commands)
         self.server = webserver.WebServer("localhost",

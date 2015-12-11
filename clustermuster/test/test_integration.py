@@ -1,5 +1,5 @@
-from pycommandcenter.servercontroller import ServerController
-from pycommandcenter.cluster import ClusterNode
+from clustermuster.servercontroller import ServerController
+from clustermuster.cluster import ClusterNode
 from utils import SendCommandFromClient
 import base
 import mock
@@ -9,7 +9,8 @@ import time
 
 class Test(base.CQSTest):
     def setUp(self):
-        self.controller = ServerController()
+        server_port = 9999
+        self.controller = ServerController(server_port)
         self.controller.start_server()
         self.username = "cooluser"
         self.node_address = "some_address"

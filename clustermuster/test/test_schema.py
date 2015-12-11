@@ -1,4 +1,4 @@
-from pycommandcenter.schema import validate_json
+from clustermuster.schema import validate_json
 import base
 from jsonschema import ValidationError
 import json
