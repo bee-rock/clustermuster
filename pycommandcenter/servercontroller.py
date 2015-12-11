@@ -2,15 +2,18 @@ import webserver
 import threading
 from cluster import Cluster
 from Queue import Queue
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class ServerController(object):
 
-    def __init__(self):
+    def __init__(self, port=9999):
         self.commands = Queue()
         self.cluster = Cluster(self.commands)
         self.server = webserver.WebServer("localhost",
-                                          9999,
+                                          port,
                                           self.commands,
                                           lambda *args,
                                           **keys: webserver.TCPHandler(self.server.command_handler, *args, **keys))

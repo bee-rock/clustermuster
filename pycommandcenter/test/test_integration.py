@@ -4,6 +4,7 @@ from utils import SendCommandFromClient
 import base
 import mock
 import json
+import time
 
 
 class Test(base.CQSTest):
@@ -23,9 +24,21 @@ class Test(base.CQSTest):
         retreived_command = self.controller.cluster.get_json()
         self.assertTrue(retreived_command is None)
 
-    def test_json_fits_schema_request(self):
+    @mock.patch.object(ClusterNode, 'send_command')
+    def test_json_fits_schema_request_with_node_available(self, mock_send_command):
+        self.controller.cluster.add_node(self.username, self.node_address, self.node_port)
         valid_json = '{"name": "any", "command":"Rossum"}'
         SendCommandFromClient(valid_json)
+        time.sleep(2)
+        self.assertEquals(None, self.controller.cluster.get_json())
+
+
+    @mock.patch.object(ClusterNode, 'send_command')
+    def test_json_fits_schema_request_without_node_available(self, mock_send_command):
+        #self.controller.cluster.add_node(self.username, self.node_address, self.node_port)
+        valid_json = '{"name": "any", "command":"Rossum"}'
+        SendCommandFromClient(valid_json)
+        time.sleep(2)
         self.assertEquals(json.loads(valid_json), self.controller.cluster.get_json())
 
     @mock.patch.object(ClusterNode, 'send_command')
