@@ -28,9 +28,9 @@ generate keys without passphrases in order to prevent clustermuster from stallin
 	ssh-keygen
 	ssh-copy-id username@nodeaddress
 	
-See examples/nodes.yaml for a sample configuration. Now your client can send commands over 9999
-in a json format which can specify a specific node or any node available and clustermuster. See
-example/client_example.py to see the schema.
+See examples/nodes.yaml for a sample configuration. Now your client can send commands over port 9999
+to the server in a json format which can specify a specific node or any node available. 
+See example/client_example.py to see the schema.
      
 ## Development
 
